@@ -17,15 +17,16 @@ const server = http.createServer((req,res) => {
             console.log(chunk);
             body.push(chunk);
         });
-        req.on('end', () => {
+        // async listeners!!!
+        return req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
             console.log(parsedBody);
             const userMessage = parsedBody.split('=')[1];
             fs.writeFileSync('message.txt', userMessage);
+            res.statusCode = 302;
+            res.setHeader('Location', '/');
+            return res.end();
         });
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end();
     }
     // console.log(req.url, req.method, req.headers);
     // process.exit();
