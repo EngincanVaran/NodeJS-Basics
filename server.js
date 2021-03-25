@@ -22,10 +22,16 @@ const server = http.createServer((req,res) => {
             const parsedBody = Buffer.concat(body).toString();
             console.log(parsedBody);
             const userMessage = parsedBody.split('=')[1];
-            fs.writeFileSync('message.txt', userMessage);
-            res.statusCode = 302;
-            res.setHeader('Location', '/');
-            return res.end();
+            // Blocked writeFile synched code!!!
+            // fs.writeFileSync('message.txt', userMessage);
+            // unBlocked writeFile async code!!!
+            fs.writeFile('message_async.txt', userMessage, (err) => {
+                // DoStaff after we are done with the writing the file
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end();
+                //ToDo --> error handling goes here, catch err
+            });
         });
     }
     // console.log(req.url, req.method, req.headers);
